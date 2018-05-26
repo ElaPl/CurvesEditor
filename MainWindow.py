@@ -1,5 +1,13 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 from PyQt4 import QtGui
+from ctypes import pointer, byref
+
 from MainToolbar import MainToolbar
+from GraphicView import GraphicView
+from Options import PointerMode
+from Controller import Controller
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -12,12 +20,23 @@ class MainWindow(QtGui.QMainWindow):
         self.setGeometry(0, 0, self.width, self.height)
         self.setWindowTitle("Curves editor")
 
-        self.init_main_menu()
-        self.init_toolbars()
+        self.controller = Controller()
+
+        self.status_bar = self.statusBar()
+        self.main_menu = self.init_main_menu()
+        self.main_toolbar = self.init_toolbars()
+        self.graphic_view = self.init_graphic_view()
+
+    def init_graphic_view(self):
+        graphic_view = GraphicView(self, self.width/2, self.height/2, self.controller,
+                                   self.status_bar)
+        self.setCentralWidget(graphic_view)
+        return graphic_view
 
     def init_toolbars(self):
-        main_toolbar = MainToolbar(self)
+        main_toolbar = MainToolbar(self, self.controller)
         self.addToolBar(main_toolbar)
+        return main_toolbar
 
     def init_main_menu(self):
         main_menu = self.menuBar()
@@ -37,9 +56,11 @@ class MainWindow(QtGui.QMainWindow):
 
         file_menu = main_menu.addMenu('&Pomoc')
         file_menu.addAction(about_action)
+        return main_menu
 
     def new_file(self):
         print("New File")
+        print(self.controller.get_pointer_mode())
 
     def show_info(self):
         print("Show Info")
