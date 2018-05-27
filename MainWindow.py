@@ -2,11 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from PyQt4 import QtGui
-from ctypes import pointer, byref
 
 from MainToolbar import MainToolbar
 from GraphicView import GraphicView
-from Options import PointerMode
 from Controller import Controller
 
 
@@ -24,8 +22,11 @@ class MainWindow(QtGui.QMainWindow):
 
         self.status_bar = self.statusBar()
         self.main_menu = self.init_main_menu()
-        self.main_toolbar = self.init_toolbars()
         self.graphic_view = self.init_graphic_view()
+        self.main_toolbar = self.init_toolbars()
+
+    def update_scene(self):
+        self.graphic_view.update()
 
     def init_graphic_view(self):
         graphic_view = GraphicView(self, self.width/2, self.height/2, self.controller,

@@ -22,3 +22,6 @@ class GraphicView(QtGui.QGraphicsView):
         draw_panel.msg2Statusbar[str].connect(self.status_bar.showMessage)
         self.setScene(draw_panel)
         return draw_panel
+
+    def update(self, *__args):
+        self.draw_panel.unselect_all_items()

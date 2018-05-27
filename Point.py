@@ -8,11 +8,11 @@ from datetime import datetime
 
 class Point(QtGui.QGraphicsItem):
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, group_id):
         super(Point, self).__init__(None)
-        print("New point at: (%f, %f)" % (x, y))
+        print("New point at: (%f, %f), group: %s" % (x, y, group_id))
 
-        # self.parent = parent
+        self.group_id = group_id
         self.setPos(x, y)
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
@@ -55,7 +55,6 @@ class Point(QtGui.QGraphicsItem):
 
     def mouseMoveEvent(self, event):
         if self.scene().controller.get_pointer_mode() == PointerMode.EDIT_MODE:
-            print("Point mouseMoveEvent")
             QtGui.QGraphicsItem.mouseMoveEvent(self, event)
 
             if self.scene().width() < self.x():

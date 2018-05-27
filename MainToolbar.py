@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 from Options import PointerMode
 
 
@@ -17,6 +17,59 @@ class MainToolbar(QtGui.QToolBar):
 
         self.addSeparator()
         self.pointer_modes = self.init_pointer_modes()
+
+        self.addSeparator()
+        self.item_groups_cb = self.init_group_item_cb()
+        self.init_new_group_icon()
+        self.init_delete_group_icon()
+
+    def init_new_group_icon(self):
+        new_group = QtGui.QAction(QtGui.QIcon('images/add-icon.png'), 'New group', self)
+        new_group.setShortcut('Ctrl+G')
+        new_group.triggered.connect(self.add_new_group)
+
+        self.addAction(new_group)
+
+    def add_new_group(self):
+        self.controller.new_item_group()
+        self.update_item_group_cb(self.item_groups_cb)
+
+    def init_delete_group_icon(self):
+        delete_group = QtGui.QAction(QtGui.QIcon('images/delete-icon.png'), 'Delete group', self)
+        delete_group.setShortcut('Ctrl+D')
+        delete_group.triggered.connect(self.delete_group)
+
+        self.addAction(delete_group)
+
+    def delete_group(self):
+        self.controller.delete_group()
+        self.update_item_group_cb(self.item_groups_cb)
+
+    def update_item_group_cb(self, cb):
+        current_group_id = self.controller.current_group.get_id()
+        groups_id = self.controller.get_item_groups_id()
+
+        cb.clear()
+        cb.addItems(groups_id)
+        i = 0
+        for id in groups_id:
+            if id == current_group_id:
+                break
+            i += 1
+
+        cb.setCurrentIndex(i)
+
+    def init_group_item_cb(self):
+        cb = QtGui.QComboBox()
+        self.update_item_group_cb(cb)
+        cb.currentIndexChanged.connect(self.handle_group_change)
+
+        self.addWidget(cb)
+        return cb
+
+    def handle_group_change(self):
+        self.controller.change_group(self.item_groups_cb.currentText())
+        self.parent().update_scene()
 
     def init_pointer_modes(self):
         insert_mode = QtGui.QAction(QtGui.QIcon('images/action.png'), 'Insert mode', self)

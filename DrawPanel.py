@@ -12,6 +12,17 @@ class DrawPanel(QtGui.QGraphicsScene):
     def __init__(self, width, height, controller, parent=None):
         super(DrawPanel, self).__init__(0, 0, width, height, parent)
         self.controller = controller
+        self.controller.create_new_item_group_signal.connect(self.create_new_group)
+        self.controller.delete_group_signal.connect(self.delete_group)
+        self.controller.new_item_group()
+        self.controller.new_item_group()
+
+    def delete_group(self, group):
+        self.destroyItemGroup(group)
+        self.controller.delete_group(self)
+
+    def create_new_group(self):
+        self.controller.new_item_group(self)
 
     def drawBackground(self, painter, rect):
         self.setBackgroundBrush(QtCore.Qt.white)
@@ -32,7 +43,10 @@ class DrawPanel(QtGui.QGraphicsScene):
             if event.buttons() == QtCore.Qt.LeftButton:
                 clickPoint = event.scenePos()
                 if 0 < clickPoint.x() < self.width() and 0 < clickPoint.y() < self.height():
-                    self.addItem(Point(clickPoint.x(), clickPoint.y()))
+                    p = Point(clickPoint.x(), clickPoint.y(),
+                              self.controller.get_group_id())
+                    self.addItem(p)
+                    self.controller.add_item_to_group(p)
                     # self.updateScene()
             else:
                 item = self.itemAt(clickPoint)
