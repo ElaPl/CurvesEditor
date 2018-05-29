@@ -14,8 +14,13 @@ class DrawPanel(QtGui.QGraphicsScene):
         self.controller = controller
         self.controller.create_new_item_group_signal.connect(self.create_new_group)
         self.controller.delete_group_signal.connect(self.delete_group)
+        self.controller.update_scene_signal.connect(self.update)
         self.controller.new_item_group()
         self.controller.new_item_group()
+
+    def update(self):
+        self.unselect_all_items()
+        super(DrawPanel, self).update()
 
     def delete_group(self, group):
         self.destroyItemGroup(group)

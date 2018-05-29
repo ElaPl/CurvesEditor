@@ -5,23 +5,56 @@ from PyQt4 import QtGui, QtCore
 from Options import PointerMode
 
 
-class MainToolbar(QtGui.QToolBar):
+class SideToolbar(QtGui.QToolBar):
     def __init__(self, parent, controller):
-        super(MainToolbar, self).__init__(parent)
-        self.setMovable(False)
+        super(SideToolbar, self).__init__(parent)
+        self.setMovable(True)
         self.controller = controller
 
-        self.init_new_icon()
-        self.init_save_icon()
-        self.init_open_icon()
-
+        self.group_id_label = self.init_label()
         self.addSeparator()
-        self.pointer_modes = self.init_pointer_modes()
+        self.visible_check_box = self.init_visible_chekbox()
 
-        self.addSeparator()
-        self.item_groups_cb = self.init_group_item_cb()
-        self.init_new_group_icon()
-        self.init_delete_group_icon()
+        #
+        #
+        # self.init_new_icon()
+        # self.init_save_icon()
+        # self.init_open_icon()
+        #
+        # self.addSeparator()
+        # self.pointer_modes = self.init_pointer_modes()
+        #
+        # self.addSeparator()
+        # self.item_groups_cb = self.init_group_item_cb()
+        # self.init_new_group_icon()
+        # self.init_delete_group_icon()
+
+    def init_label(self):
+        l1 = QtGui.QLabel(self.controller.current_group.get_id(), self)
+        l1.setMargin(10)
+
+        self.addWidget(l1)
+        return l1
+
+    def init_visible_chekbox(self):
+        checkbox = QtGui.QCheckBox("Schowaj", self)
+        checkbox.stateChanged.connect(self.hande_chenge_visible)
+
+        self.addWidget(checkbox)
+        return checkbox
+
+    def init_connect_chekbox(self):
+        checkbox = QtGui.QCheckBox("Schowaj", self)
+        checkbox.stateChanged.connect(self.hande_chenge_visible)
+
+        self.addWidget(checkbox)
+        return checkbox
+
+
+    def hande_chenge_visible(self):
+        print("hande_chenge_visible handled")
+
+
 
     def init_new_group_icon(self):
         new_group = QtGui.QAction(QtGui.QIcon('images/add-icon.png'), 'New group', self)
@@ -69,7 +102,7 @@ class MainToolbar(QtGui.QToolBar):
 
     def handle_group_change(self):
         self.controller.change_group(self.item_groups_cb.currentText())
-        # self.controller.update_side_toolbar(self.item_groups_cb.currentText())
+        self.controller.update_side_toolbar(self.item_groups_cb.currentText())
         self.controller.update_scene()
 
     def init_pointer_modes(self):

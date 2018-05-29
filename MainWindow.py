@@ -1,9 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 
 from MainToolbar import MainToolbar
+from SideToolbar import SideToolbar
 from GraphicView import GraphicView
 from Controller import Controller
 
@@ -23,7 +24,8 @@ class MainWindow(QtGui.QMainWindow):
         self.status_bar = self.statusBar()
         self.main_menu = self.init_main_menu()
         self.graphic_view = self.init_graphic_view()
-        self.main_toolbar = self.init_toolbars()
+        self.main_toolbar = self.init_main_toolbar()
+        self.side_toolbar = self.init_side_toolbar()
 
     def update_scene(self):
         self.graphic_view.update()
@@ -34,10 +36,15 @@ class MainWindow(QtGui.QMainWindow):
         self.setCentralWidget(graphic_view)
         return graphic_view
 
-    def init_toolbars(self):
+    def init_main_toolbar(self):
         main_toolbar = MainToolbar(self, self.controller)
         self.addToolBar(main_toolbar)
         return main_toolbar
+
+    def init_side_toolbar(self):
+        side_toolbar = SideToolbar(self, self.controller)
+        self.addToolBar(QtCore.Qt.RightToolBarArea, side_toolbar)
+        return side_toolbar
 
     def init_main_menu(self):
         main_menu = self.menuBar()

@@ -9,6 +9,7 @@ from PyQt4 import QtCore, QtGui
 class Controller(QtCore.QObject):
     create_new_item_group_signal = QtCore.pyqtSignal()
     delete_group_signal = QtCore.pyqtSignal(QtGui.QGraphicsItemGroup)
+    update_scene_signal = QtCore.pyqtSignal()
 
     def __init__(self, parent=None):
         super(Controller, self).__init__(parent)
@@ -20,6 +21,9 @@ class Controller(QtCore.QObject):
 
         self.elem_group_num = 1
         self.first_free_elem_group_id = 2
+
+    def update_scene(self):
+        self.update_scene_signal.emit()
 
     def delete_group(self, scene=None):
         if scene is None:
