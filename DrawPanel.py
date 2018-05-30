@@ -15,10 +15,15 @@ class DrawPanel(QtGui.QGraphicsScene):
         self.controller.create_new_item_group_signal.connect(self.create_new_group)
         self.controller.delete_group_signal.connect(self.delete_group)
         self.controller.update_scene_signal.connect(self.update)
-        self.controller.new_item_group()
-        self.controller.new_item_group()
+        self.controller.new_item_group(self)
+        self.controller.new_item_group(self)
 
     def update(self):
+        # for item in self.controller.item_groups:
+        #     if item.is_merge():
+        #         self.addWidget(item.merged_group)
+        #     else:
+        #         for p in self.controller.item_groups.
         self.unselect_all_items()
         super(DrawPanel, self).update()
 
@@ -52,7 +57,8 @@ class DrawPanel(QtGui.QGraphicsScene):
                     p = Point(clickPoint.x(), clickPoint.y(),
                               self.controller.get_group_id())
                     self.controller.add_item_to_group(p)
-                    self.addItem(p)
+                    if not self.controller.current_group.is_merge:
+                        self.addItem(p)
                     # self.updateScene()
             else:
                 item = self.itemAt(clickPoint)

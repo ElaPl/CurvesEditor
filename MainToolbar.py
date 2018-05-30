@@ -70,7 +70,6 @@ class MainToolbar(QtGui.QToolBar):
     def handle_group_change(self):
         self.controller.change_group(self.item_groups_cb.currentText())
         # self.controller.update_side_toolbar(self.item_groups_cb.currentText())
-        self.controller.update_scene()
 
     def init_pointer_modes(self):
         insert_mode = QtGui.QAction(QtGui.QIcon('images/action.png'), 'Insert mode', self)

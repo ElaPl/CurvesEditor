@@ -11,6 +11,7 @@ class Controller(QtCore.QObject):
     create_new_item_group_signal = QtCore.pyqtSignal()
     delete_group_signal = QtCore.pyqtSignal(QtGui.QGraphicsItemGroup)
     update_scene_signal = QtCore.pyqtSignal()
+    change_group_signal = QtCore.pyqtSignal()
 
     def __init__(self, parent=None):
         super(Controller, self).__init__(parent)
@@ -24,14 +25,11 @@ class Controller(QtCore.QObject):
         self.update_scene_signal.emit()
 
     def delete_group(self, scene=None):
-        if scene is None:
-            self.delete_group_signal.emit(self.current_group)
+        self.item_groups.remove(self.current_group)
+        if len(self.item_groups) == 0:
+            self.new_item_group(scene)
         else:
-            self.item_groups.remove(self.current_group)
-            if len(self.item_groups) == 0:
-                self.new_item_group(scene)
-            else:
-                self.current_group = self.item_groups[0]
+            self.current_group = self.item_groups[0]
 
     def get_group_num(self):
         return len(self.item_groups)
@@ -72,11 +70,20 @@ class Controller(QtCore.QObject):
                 self.current_group = group
                 break
 
+        self.update_scene_signal.emit()
+        self.change_group_signal.emit()
+
     def set_group_visible(self, value):
         self.current_group.set_visible(value)
 
     def is_group_visible(self):
         return self.current_group.is_group_visible()
+
+    def merge_group(self, value):
+        if value:
+            self.current_group.merge()
+        else:
+            self.current_group.un_merge()
 
     def get_pointer_mode(self):
         return self.pointer_mode

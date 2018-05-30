@@ -27,6 +27,12 @@ class MainWindow(QtGui.QMainWindow):
         self.main_toolbar = self.init_main_toolbar()
         self.side_toolbar = self.init_side_toolbar()
 
+        self.controller.change_group_signal.connect(self.handle_change_group)
+
+    def handle_change_group(self):
+        self.removeToolBar(self.side_toolbar)
+        self.side_toolbar = self.init_side_toolbar()
+
     def update_scene(self):
         self.graphic_view.update()
 
