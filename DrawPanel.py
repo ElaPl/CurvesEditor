@@ -43,20 +43,23 @@ class DrawPanel(QtGui.QGraphicsScene):
         painter.drawLines([line1, line2, line3, line4])
 
     def mousePressEvent(self, event):
-        if PointerMode.INSERT_MODE == self.controller.get_pointer_mode():
+        if PointerMode.INSERT_MODE == self.controller.get_pointer_mode() and \
+                self.controller.is_group_visible():
             clickPoint = event.scenePos()
             if event.buttons() == QtCore.Qt.LeftButton:
                 clickPoint = event.scenePos()
                 if 0 < clickPoint.x() < self.width() and 0 < clickPoint.y() < self.height():
                     p = Point(clickPoint.x(), clickPoint.y(),
                               self.controller.get_group_id())
-                    self.addItem(p)
                     self.controller.add_item_to_group(p)
+                    self.addItem(p)
                     # self.updateScene()
             else:
                 item = self.itemAt(clickPoint)
-                if item is not None:
+                if item is not None and item.get_group_id() == self.controller.get_group_id():
                     self.removeItem(item)
+                    if item is type(Point):
+                        self.controller.delete_point(item)
                     # self.updateScene()
 
         super(DrawPanel, self).mousePressEvent(event)

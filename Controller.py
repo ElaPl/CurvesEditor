@@ -4,6 +4,7 @@
 from Options import PointerMode
 from ItemGroup import ItemGroup
 from PyQt4 import QtCore, QtGui
+from PointGroup import PointGroup
 
 
 class Controller(QtCore.QObject):
@@ -18,9 +19,6 @@ class Controller(QtCore.QObject):
         self.item_groups = []
         self.max_group_id = 0
         self.current_group = None
-
-        self.elem_group_num = 1
-        self.first_free_elem_group_id = 2
 
     def update_scene(self):
         self.update_scene_signal.emit()
@@ -46,14 +44,14 @@ class Controller(QtCore.QObject):
                 self.max_group_id += 1
                 group_id = "Group " + str(self.max_group_id)
 
-            self.item_groups.append(ItemGroup(scene, group_id))
+            self.item_groups.append(PointGroup(scene, group_id))
             self.current_group = self.item_groups[-1]
 
-    def add_item_to_group(self, item):
-        self.current_group.addToGroup(item)
+    def add_item_to_group(self, point):
+        self.current_group.add_point(point)
 
-    def remove_from_group(self, item):
-        self.current_group.removeFromGroup(item)
+    def delete_point(self, item):
+        self.current_group.delete_point(item)
 
     def get_group_id(self):
         return self.current_group.get_id()
@@ -73,6 +71,12 @@ class Controller(QtCore.QObject):
             if group.get_id() == group_id:
                 self.current_group = group
                 break
+
+    def set_group_visible(self, value):
+        self.current_group.set_visible(value)
+
+    def is_group_visible(self):
+        return self.current_group.is_group_visible()
 
     def get_pointer_mode(self):
         return self.pointer_mode

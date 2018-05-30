@@ -30,6 +30,18 @@ class Point(QtGui.QGraphicsItem):
         self.radius = 3
         self.creation_date = datetime.now()
 
+    def __eq__(self, other):
+        if self.x() == other.x() and\
+                        self.y() == other.y() and\
+                        self.creation_date == other.creation_date and\
+                        self.group_id == other.group_id:
+            return True
+
+        return False
+
+    def get_group_id(self):
+        return self.group_id
+
     def boundingRect(self):
         return QtCore.QRectF(-self.radius, -self.radius, 2*self.radius, 2*self.radius)
 

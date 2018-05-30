@@ -13,7 +13,7 @@ class SideToolbar(QtGui.QToolBar):
 
         self.group_id_label = self.init_label()
         self.addSeparator()
-        self.visible_check_box = self.init_visible_chekbox()
+        self.visible_checkbox = self.init_visible_chekbox()
 
         #
         #
@@ -43,6 +43,9 @@ class SideToolbar(QtGui.QToolBar):
         self.addWidget(checkbox)
         return checkbox
 
+    def hande_chenge_visible(self):
+        self.controller.set_group_visible(not self.visible_checkbox.isChecked())
+
     def init_connect_chekbox(self):
         checkbox = QtGui.QCheckBox("Schowaj", self)
         checkbox.stateChanged.connect(self.hande_chenge_visible)
@@ -51,8 +54,6 @@ class SideToolbar(QtGui.QToolBar):
         return checkbox
 
 
-    def hande_chenge_visible(self):
-        print("hande_chenge_visible handled")
 
 
 
