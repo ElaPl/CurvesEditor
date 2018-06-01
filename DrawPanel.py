@@ -48,6 +48,7 @@ class DrawPanel(QtGui.QGraphicsScene):
         painter.drawLines([line1, line2, line3, line4])
 
     def mousePressEvent(self, event):
+
         if PointerMode.INSERT_MODE == self.controller.get_pointer_mode() and \
                 self.controller.is_group_visible():
             clickPoint = event.scenePos()
@@ -59,6 +60,9 @@ class DrawPanel(QtGui.QGraphicsScene):
                     self.controller.add_item_to_group(p)
                     if not self.controller.current_group.is_merge:
                         self.addItem(p)
+                    else:
+                        self.controller.current_group.set_selected(True)
+
                     # self.updateScene()
             else:
                 item = self.itemAt(clickPoint)

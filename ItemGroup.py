@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt4 import QtGui
+from Options import PointerMode
 
 
 class ItemGroup(QtGui.QGraphicsItemGroup):
@@ -9,8 +10,8 @@ class ItemGroup(QtGui.QGraphicsItemGroup):
         super(ItemGroup, self).__init__(parent=None, scene=scene)
 
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
-        self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
         self.setFlag(QtGui.QGraphicsItem.ItemIsFocusable, True)
+        self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
         self.setAcceptsHoverEvents(True)
         self.setSelected(False)
 
@@ -18,20 +19,17 @@ class ItemGroup(QtGui.QGraphicsItemGroup):
         for p in points:
             self.addToGroup(p)
 
+    def mouseMoveEvent(self, event):
+        if self.scene().controller.get_pointer_mode() == PointerMode.EDIT_MODE:
+            QtGui.QGraphicsItemGroup.mouseMoveEvent(self, event)
+
     def mousePressEvent(self, event):
-        print("QGraphicsItemGroup mousePressEvent")
-        # if self.scene().controller.current_group.get_id() == self.id:
-        #     self.setSelected(True)
-        # else:
-        #     self.setSelected(False)
+        if self.scene().controller.get_pointer_mode() == PointerMode.EDIT_MODE:
+            QtGui.QGraphicsItemGroup.mousePressEvent(self, event)
 
     def mouseReleaseEvent(self, event):
-        print("QGraphicsItemGroup mouseReleaseEvent")
-        #
-        # if self.scene().controller.current_group.get_id() == self.id:
-        #     self.setSelected(True)
-        # else:
-        #     self.setSelected(False)
+        if self.scene().controller.get_pointer_mode() == PointerMode.EDIT_MODE:
+            QtGui.QGraphicsItemGroup.mouseReleaseEvent(self, event)
 
     def get_id(self):
         return self.id

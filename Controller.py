@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from Options import PointerMode
-from ItemGroup import ItemGroup
 from PyQt4 import QtCore, QtGui
 from PointGroup import PointGroup
 
@@ -43,7 +42,10 @@ class Controller(QtCore.QObject):
                 group_id = "Group " + str(self.max_group_id)
 
             self.item_groups.append(PointGroup(scene, group_id))
-            self.current_group = self.item_groups[-1]
+            if self.current_group is None:
+                self.current_group = self.item_groups[-1]
+            else:
+                self.change_group(self.item_groups[-1].get_id())
 
     def add_item_to_group(self, point):
         self.current_group.add_point(point)
@@ -65,9 +67,17 @@ class Controller(QtCore.QObject):
         return groups_id
 
     def change_group(self, group_id):
+        print("Change group to %s", group_id)
+        self.current_group.set_moveable(False)
+        self.current_group.set_selectable(False)
+        self.current_group.set_focusable(False)
         for group in self.item_groups:
             if group.get_id() == group_id:
                 self.current_group = group
+                self.current_group.set_moveable(True)
+                self.current_group.set_selectable(True)
+                self.current_group.set_focusable(True)
+                self.current_group.set_selected(True)
                 break
 
         self.update_scene_signal.emit()
