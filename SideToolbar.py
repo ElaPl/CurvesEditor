@@ -15,6 +15,21 @@ class SideToolbar(QtGui.QToolBar):
         self.addSeparator()
         self.visible_checkbox = self.init_visible_checkbox()
         self.merge_checkbox = self.init_merge_checkbox()
+        self.addSeparator()
+        self.convex_hull_checkbox = self.init_convex_hull_checkbox()
+
+    def init_convex_hull_checkbox(self):
+        convex_hull_check_box = QtGui.QAction('Otoczka wypukła', self)
+        convex_hull_check_box.setCheckable(True)
+        convex_hull_check_box.setChecked(False)
+        convex_hull_check_box.triggered.connect(self.handle_convex_hull_check)
+
+        self.addAction(convex_hull_check_box)
+
+        return convex_hull_check_box
+
+    def handle_convex_hull_check(self):
+        self.controller.set_convex_hull(self.convex_hull_checkbox.isChecked())
 
     def init_label(self):
         l1 = QtGui.QLabel(self.controller.current_group.get_id(), self)
@@ -27,6 +42,8 @@ class SideToolbar(QtGui.QToolBar):
         checkbox = QtGui.QCheckBox("Schowaj", self)
         if self.controller.current_group.is_group_visible():
             checkbox.setCheckState(0)
+        else:
+            checkbox.setCheckState(2)
 
         checkbox.stateChanged.connect(self.handle_change_visible)
 

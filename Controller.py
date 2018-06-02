@@ -21,6 +21,7 @@ class Controller(QtCore.QObject):
         self.current_group = None
 
     def update_scene(self):
+        self.current_group.update()
         self.update_scene_signal.emit()
 
     def delete_group(self, scene=None):
@@ -80,8 +81,15 @@ class Controller(QtCore.QObject):
                 self.current_group.set_selected(True)
                 break
 
-        self.update_scene_signal.emit()
+        self.update_scene()
         self.change_group_signal.emit()
+
+    def set_convex_hull(self, value):
+        if value:
+            self.current_group.draw_convex_hull()
+        else:
+            self.current_group.remove_convex_hull()
+        self.update_scene()
 
     def set_group_visible(self, value):
         self.current_group.set_visible(value)
@@ -94,6 +102,7 @@ class Controller(QtCore.QObject):
             self.current_group.merge()
         else:
             self.current_group.un_merge()
+            self.update_scene()
 
     def get_pointer_mode(self):
         return self.pointer_mode

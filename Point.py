@@ -78,6 +78,8 @@ class Point(QtGui.QGraphicsItem):
             if self.x() < 0:
                 self.setX(0)
 
+        self.scene().controller.update_scene()
+
             # self.scene().displayCoordinates(self.x(), self.y())
             # self.scene().updateScene()
 
@@ -88,9 +90,9 @@ class Point(QtGui.QGraphicsItem):
             if event.buttons() == QtCore.Qt.LeftButton:
                 self.scene().unselect_all_items()
             self.setSelected(True)
-            # self.scene().displayCoordinates(self.x(), self.y())
 
-            QtGui.QGraphicsItem.mousePressEvent(self, event)
+        QtGui.QGraphicsItem.mousePressEvent(self, event)
+        self.scene().controller.update_scene()
 
     def hoverEnterEvent(self, event):
         self.brush.setColor(QtCore.Qt.blue)

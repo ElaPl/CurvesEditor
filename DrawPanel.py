@@ -19,13 +19,10 @@ class DrawPanel(QtGui.QGraphicsScene):
         self.controller.new_item_group(self)
 
     def update(self):
-        # for item in self.controller.item_groups:
-        #     if item.is_merge():
-        #         self.addWidget(item.merged_group)
-        #     else:
-        #         for p in self.controller.item_groups.
         self.unselect_all_items()
-        super(DrawPanel, self).update()
+        if self.controller.current_group.is_merge:
+            self.controller.current_group.set_selected(True)
+        super(DrawPanel, self).update(0, 0, self.width(), self.height())
 
     def delete_group(self, group):
         self.destroyItemGroup(group)
@@ -62,15 +59,12 @@ class DrawPanel(QtGui.QGraphicsScene):
                         self.addItem(p)
                     else:
                         self.controller.current_group.set_selected(True)
-
-                    # self.updateScene()
             else:
                 item = self.itemAt(clickPoint)
                 if item is not None and item.get_group_id() == self.controller.get_group_id():
                     self.removeItem(item)
                     if item is type(Point):
                         self.controller.delete_point(item)
-                    # self.updateScene()
 
         super(DrawPanel, self).mousePressEvent(event)
 
@@ -83,3 +77,4 @@ class DrawPanel(QtGui.QGraphicsScene):
         if 0 < current_pos.x() < self.width() and 0 < current_pos.y() < self.height():
             self.msg2Statusbar.emit('x: ' + str(current_pos.x()) + '  y: ' + str(current_pos.y()))
         super(DrawPanel, self).mouseMoveEvent(event)
+        self.update()

@@ -6,7 +6,7 @@ from Options import PointerMode
 
 
 class ItemGroup(QtGui.QGraphicsItemGroup):
-    def __init__(self, scene, points):
+    def __init__(self, scene, points, other=None):
         super(ItemGroup, self).__init__(parent=None, scene=scene)
 
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
@@ -19,6 +19,10 @@ class ItemGroup(QtGui.QGraphicsItemGroup):
         for p in points:
             self.addToGroup(p)
 
+        if other is not None:
+            for elem in other:
+                self.addToGroup(elem)
+
     def mouseMoveEvent(self, event):
         if self.scene().controller.get_pointer_mode() == PointerMode.EDIT_MODE:
             QtGui.QGraphicsItemGroup.mouseMoveEvent(self, event)
@@ -26,10 +30,6 @@ class ItemGroup(QtGui.QGraphicsItemGroup):
     def mousePressEvent(self, event):
         if self.scene().controller.get_pointer_mode() == PointerMode.EDIT_MODE:
             QtGui.QGraphicsItemGroup.mousePressEvent(self, event)
-
-    def mouseReleaseEvent(self, event):
-        if self.scene().controller.get_pointer_mode() == PointerMode.EDIT_MODE:
-            QtGui.QGraphicsItemGroup.mouseReleaseEvent(self, event)
 
     def get_id(self):
         return self.id
