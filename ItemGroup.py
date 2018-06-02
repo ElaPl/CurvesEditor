@@ -1,14 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 from Options import PointerMode
 
 
 class ItemGroup(QtGui.QGraphicsItemGroup):
-    def __init__(self, scene, points, other=None):
-        super(ItemGroup, self).__init__(parent=None, scene=scene)
 
+    def __init__(self, parent, scene, points, other=None):
+        QtGui.QGraphicsItemGroup.__init__(self, parent=None, scene=scene)
+
+        self.parent = parent
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QtGui.QGraphicsItem.ItemIsFocusable, True)
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
@@ -19,9 +21,8 @@ class ItemGroup(QtGui.QGraphicsItemGroup):
         for p in points:
             self.addToGroup(p)
 
-        if other is not None:
-            for elem in other:
-                self.addToGroup(elem)
+        for elem in other:
+            self.addToGroup(elem)
 
     def mouseMoveEvent(self, event):
         if self.scene().controller.get_pointer_mode() == PointerMode.EDIT_MODE:
@@ -30,6 +31,12 @@ class ItemGroup(QtGui.QGraphicsItemGroup):
     def mousePressEvent(self, event):
         if self.scene().controller.get_pointer_mode() == PointerMode.EDIT_MODE:
             QtGui.QGraphicsItemGroup.mousePressEvent(self, event)
+
+    def mouseReleaseEvent(self, event):
+        if self.scene().controller.get_pointer_mode() == PointerMode.EDIT_MODE:
+            QtGui.QGraphicsItemGroup.mousePressEvent(self, event)
+            self.parent.update_group()
+            # self.moved_item_group.emit()
 
     def get_id(self):
         return self.id

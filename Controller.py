@@ -21,7 +21,7 @@ class Controller(QtCore.QObject):
         self.current_group = None
 
     def update_scene(self):
-        self.current_group.update()
+        # self.current_group.update()
         self.update_scene_signal.emit()
 
     def delete_group(self, scene=None):
@@ -43,6 +43,7 @@ class Controller(QtCore.QObject):
                 group_id = "Group " + str(self.max_group_id)
 
             self.item_groups.append(PointGroup(scene, group_id))
+
             if self.current_group is None:
                 self.current_group = self.item_groups[-1]
             else:
@@ -69,15 +70,16 @@ class Controller(QtCore.QObject):
 
     def change_group(self, group_id):
         print("Change group to %s", group_id)
-        self.current_group.set_moveable(False)
-        self.current_group.set_selectable(False)
-        self.current_group.set_focusable(False)
+        self.current_group.set_flag(QtGui.QGraphicsItem.ItemIsMovable, False)
+        self.current_group.set_flag(QtGui.QGraphicsItem.ItemIsFocusable, False)
+        self.current_group.set_flag(QtGui.QGraphicsItem.ItemIsFocusable, False)
+
         for group in self.item_groups:
             if group.get_id() == group_id:
                 self.current_group = group
-                self.current_group.set_moveable(True)
-                self.current_group.set_selectable(True)
-                self.current_group.set_focusable(True)
+                self.current_group.set_flag(QtGui.QGraphicsItem.ItemIsMovable, True)
+                self.current_group.set_flag(QtGui.QGraphicsItem.ItemIsFocusable, True)
+                self.current_group.set_flag(QtGui.QGraphicsItem.ItemIsFocusable, True)
                 self.current_group.set_selected(True)
                 break
 
@@ -90,6 +92,9 @@ class Controller(QtCore.QObject):
         else:
             self.current_group.remove_convex_hull()
         self.update_scene()
+
+    def change_curve(self, curve_id):
+        self.current_group.change_curve(curve_id)
 
     def set_group_visible(self, value):
         self.current_group.set_visible(value)

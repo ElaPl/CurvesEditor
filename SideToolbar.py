@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt4 import QtGui, QtCore
-from Options import PointerMode
+from Options import PointerMode, get_curve_names
 
 
 class SideToolbar(QtGui.QToolBar):
@@ -17,6 +17,18 @@ class SideToolbar(QtGui.QToolBar):
         self.merge_checkbox = self.init_merge_checkbox()
         self.addSeparator()
         self.convex_hull_checkbox = self.init_convex_hull_checkbox()
+        self.addSeparator()
+        self.curve_combo_box = self.init_curve_combo_box()
+
+    def init_curve_combo_box(self):
+        cb = QtGui.QComboBox()
+        cb.addItems(get_curve_names())
+        cb.currentIndexChanged.connect(self.handle_change_curve)
+        self.addWidget(cb)
+        return cb
+
+    def handle_change_curve(self):
+        self.controller.change_curve(self.curve_combo_box.currentIndex())
 
     def init_convex_hull_checkbox(self):
         convex_hull_check_box = QtGui.QAction('Otoczka wypukła', self)
@@ -65,4 +77,3 @@ class SideToolbar(QtGui.QToolBar):
 
     def handle_change_merge_group(self):
         self.controller.merge_group(self.merge_checkbox.isChecked())
-        print("handle_change_merge_group")
