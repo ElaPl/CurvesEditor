@@ -17,8 +17,10 @@ class SideToolbar(QtGui.QToolBar):
         self.merge_checkbox = self.init_merge_checkbox()
         self.addSeparator()
         self.convex_hull_checkbox = self.init_convex_hull_checkbox()
-        self.addSeparator()
+        # self.addSeparator()
         self.curve_combo_box = self.init_curve_combo_box()
+        self.addSeparator()
+
 
     def init_curve_combo_box(self):
         cb = QtGui.QComboBox()

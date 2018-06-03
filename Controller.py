@@ -22,6 +22,7 @@ class Controller(QtCore.QObject):
 
     def update_scene(self):
         # self.current_group.update()
+        self.current_group.update_group()
         self.update_scene_signal.emit()
 
     def delete_group(self, scene=None):

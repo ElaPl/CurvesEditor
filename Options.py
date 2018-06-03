@@ -9,10 +9,12 @@ class PointerMode:
 class CurveMode:
     NO_MODE = 0
     BEZIER_CURVE = 1 << 0
+    BEZIER_CURVE_HORNER = 1 << 1
 
 
 curve_options = [("No curve", CurveMode.NO_MODE),
-                 ("Bezier_curve", CurveMode.BEZIER_CURVE)]
+                 ("Bezier curve", CurveMode.BEZIER_CURVE),
+                 ("Bezier curve horner", CurveMode.BEZIER_CURVE_HORNER)]
 
 def get_curve_names():
     l = []

@@ -48,6 +48,7 @@ class MainWindow(QtGui.QMainWindow):
         return main_toolbar
 
     def init_side_toolbar(self):
+        print("Init side toolbar")
         side_toolbar = SideToolbar(self, self.controller)
         self.addToolBar(QtCore.Qt.RightToolBarArea, side_toolbar)
         return side_toolbar
