@@ -1,5 +1,6 @@
 from PyQt4 import QtGui, QtCore
 # from Curve import Curve
+from Point import Point
 
 class simple_Point:
     def __init__(self, x, y):
@@ -17,6 +18,23 @@ class BezierCurve(QtGui.QGraphicsItem):
         self.pen = QtGui.QPen(QtCore.Qt.SolidLine)
         self.pen.setWidth(2)
         self.pen.setColor(QtCore.Qt.blue)
+
+    def increase_by_one(self):
+        new_control_points = [self.controlPoints[0]]
+        curr_degree = len(self.controlPoints)
+        group_id = self.controlPoints[0].group_id
+
+        for i in range(1, curr_degree):
+            x = i/(curr_degree + 1) * self.controlPoints[i-1].x() + \
+                (curr_degree + 1 - i) / (curr_degree + 1) * self.controlPoints[i].x()
+            y = i / (curr_degree + 1) * self.controlPoints[i - 1].y() + \
+                (curr_degree + 1 - i) / (curr_degree + 1) * self.controlPoints[i].y()
+
+            new_control_points.append(Point(x, y, group_id))
+        new_control_points.append(self.controlPoints[-1])
+
+        self.controlPoints = new_control_points
+        self.computeBezierCurve(self.controlPoints)
 
     def computeBezierCurve(self, controlPoints):
         controlPointsNum = len(controlPoints)
@@ -49,12 +67,14 @@ class BezierCurve(QtGui.QGraphicsItem):
         return values[controlPointsNum - 1][0]
 
     def boundingRect(self):
-        leftX = min([point.x for point in self.bezierPoints])
-        rightX = max([point.x for point in self.bezierPoints])
-        maxY = max([point.y for point in self.bezierPoints])
-        minY = min([point.y for point in self.bezierPoints])
+        if len(self.bezierPoints) > 0:
+            leftX = min([point.x for point in self.bezierPoints])
+            rightX = max([point.x for point in self.bezierPoints])
+            maxY = max([point.y for point in self.bezierPoints])
+            minY = min([point.y for point in self.bezierPoints])
 
-        return QtCore.QRectF(leftX, minY, rightX - leftX, maxY - minY)
+            return QtCore.QRectF(leftX, minY, rightX - leftX, maxY - minY)
+        return QtCore.QRectF(0, 0, 0, 0)
 
     def paint(self, painter, option, widget=None):
         painter.setPen(self.pen)

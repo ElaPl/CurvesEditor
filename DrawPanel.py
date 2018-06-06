@@ -55,9 +55,7 @@ class DrawPanel(QtGui.QGraphicsScene):
                     p = Point(clickPoint.x(), clickPoint.y(),
                               self.controller.get_group_id())
                     self.controller.add_item_to_group(p)
-                    if not self.controller.current_group.is_merge:
-                        self.addItem(p)
-                    else:
+                    if self.controller.current_group.is_merge:
                         self.controller.current_group.set_selected(True)
             else:
                 item = self.itemAt(clickPoint)

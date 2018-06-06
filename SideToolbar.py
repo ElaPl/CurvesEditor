@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt4 import QtGui, QtCore
-from Options import PointerMode, get_curve_names
+from Options import PointerMode, get_curve_names, CurveMode
 
 
 class SideToolbar(QtGui.QToolBar):
@@ -10,6 +10,7 @@ class SideToolbar(QtGui.QToolBar):
         super(SideToolbar, self).__init__(parent)
         self.setMovable(True)
         self.controller = controller
+        self.controller.change_degree_signal.connect(self.update_degree)
 
         self.group_id_label = self.init_label()
         self.addSeparator()
@@ -17,10 +18,38 @@ class SideToolbar(QtGui.QToolBar):
         self.merge_checkbox = self.init_merge_checkbox()
         self.addSeparator()
         self.convex_hull_checkbox = self.init_convex_hull_checkbox()
-        # self.addSeparator()
+        self.addSeparator()
         self.curve_combo_box = self.init_curve_combo_box()
         self.addSeparator()
+        self.degree_label, self.plus_button, self.minus_button = self.init_degree()
 
+    def update_degree(self):
+        self.degree_label.setText("Degree: " + str(self.controller.group_degree()))
+
+    def init_degree(self):
+
+        l1 = QtGui.QLabel("Degree: " + str(self.controller.group_degree()))
+        l1.setMargin(3)
+        self.addWidget(l1)
+
+        plus_button = QtGui.QPushButton("+")
+        plus_button.clicked.connect(self.increase_degree)
+        self.addWidget(plus_button)
+
+        minus_button = QtGui.QPushButton("-")
+        minus_button.clicked.connect(self.decrease_degree)
+        self.addWidget(minus_button)
+
+        return l1, plus_button, minus_button
+
+    def increase_degree(self):
+        if self.controller.bezier_curve_active():
+            self.controller.increase_degree_by_one()
+            print("Increase degree")
+
+    def decrease_degree(self):
+        if self.controller.bezier_curve_active():
+            print("Decrease degree")
 
     def init_curve_combo_box(self):
         cb = QtGui.QComboBox()
@@ -31,6 +60,7 @@ class SideToolbar(QtGui.QToolBar):
 
     def handle_change_curve(self):
         self.controller.change_curve(self.curve_combo_box.currentIndex())
+        self.update_degree()
 
     def init_convex_hull_checkbox(self):
         convex_hull_check_box = QtGui.QAction('Otoczka wypukła', self)

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from Options import PointerMode
+from Options import PointerMode, CurveMode
 from PyQt4 import QtCore, QtGui
 from PointGroup import PointGroup
 
@@ -11,6 +11,7 @@ class Controller(QtCore.QObject):
     delete_group_signal = QtCore.pyqtSignal(QtGui.QGraphicsItemGroup)
     update_scene_signal = QtCore.pyqtSignal()
     change_group_signal = QtCore.pyqtSignal()
+    change_degree_signal = QtCore.pyqtSignal()
 
     def __init__(self, parent=None):
         super(Controller, self).__init__(parent)
@@ -20,10 +21,25 @@ class Controller(QtCore.QObject):
         self.max_group_id = 0
         self.current_group = None
 
+    def bezier_curve_active(self):
+        if self.current_group.curve_id == CurveMode.BEZIER_CURVE or self.current_group.curve_id \
+                == CurveMode.BEZIER_CURVE_HORNER:
+            return True
+        return False
+
+    def increase_degree_by_one(self):
+        self.current_group.increase_degree_by_one()
+        self.change_degree_signal.emit()
+        self.update_scene_signal.emit()
+
+    def group_degree(self):
+        return self.current_group.degree()
+
     def update_scene(self):
         # self.current_group.update()
         self.current_group.update_group()
         self.update_scene_signal.emit()
+
 
     def delete_group(self, scene=None):
         self.item_groups.remove(self.current_group)
@@ -52,9 +68,11 @@ class Controller(QtCore.QObject):
 
     def add_item_to_group(self, point):
         self.current_group.add_point(point)
+        self.change_degree_signal.emit()
 
     def delete_point(self, item):
         self.current_group.delete_point(item)
+        self.change_degree_signal.emit()
 
     def get_group_id(self):
         return self.current_group.get_id()

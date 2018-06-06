@@ -24,6 +24,26 @@ class PointGroup(QtCore.QObject):
         self.curve_id = CurveMode.NO_MODE
         self.curve = None
 
+    def increase_degree_by_one(self):
+        self.curve.increase_by_one()
+        new_points = self.curve.controlPoints
+
+        if self.is_merge:
+            self.un_merge()
+
+        for p in self.points[1:-1]:
+            self.scene.removeItem(p)
+
+        self.points = new_points
+
+        for p in self.points[1:-1]:
+            self.scene.addItem(p)
+
+        self.update_group()
+        
+    def degree(self):
+        return len(self.points)
+
     def change_curve(self, curve_id):
         if curve_id == CurveMode.NO_MODE and (self.curve is not None):
             self.curve_id = curve_id
@@ -130,6 +150,7 @@ class PointGroup(QtCore.QObject):
 
     def add_point(self, point):
         self.points.append(point)
+        self.scene.addItem(point)
         if self.is_merge:
             self.merged_group.addToGroup(point)
 
@@ -177,6 +198,8 @@ class PointGroup(QtCore.QObject):
             idx += 1
         if self.is_merge:
             self.merged_group.removeFromGroup(point)
+        else:
+            self.scene.removeItem(point)
 
         if self.convex_hull is not None:
             self.update_convex_hull()
