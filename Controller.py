@@ -71,6 +71,7 @@ class Controller(QtCore.QObject):
         self.change_degree_signal.emit()
 
     def delete_point(self, item):
+        print("Controller delete group")
         self.current_group.delete_point(item)
         self.change_degree_signal.emit()
 
@@ -91,14 +92,14 @@ class Controller(QtCore.QObject):
         print("Change group to %s", group_id)
         self.current_group.set_flag(QtGui.QGraphicsItem.ItemIsMovable, False)
         self.current_group.set_flag(QtGui.QGraphicsItem.ItemIsFocusable, False)
-        self.current_group.set_flag(QtGui.QGraphicsItem.ItemIsFocusable, False)
+        self.current_group.set_flag(QtGui.QGraphicsItem.ItemIsSelectable, False)
 
         for group in self.item_groups:
             if group.get_id() == group_id:
                 self.current_group = group
                 self.current_group.set_flag(QtGui.QGraphicsItem.ItemIsMovable, True)
                 self.current_group.set_flag(QtGui.QGraphicsItem.ItemIsFocusable, True)
-                self.current_group.set_flag(QtGui.QGraphicsItem.ItemIsFocusable, True)
+                self.current_group.set_flag(QtGui.QGraphicsItem.ItemIsSelectable, True)
                 self.current_group.set_selected(True)
                 break
 

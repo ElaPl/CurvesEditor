@@ -58,10 +58,11 @@ class DrawPanel(QtGui.QGraphicsScene):
                     if self.controller.current_group.is_merge:
                         self.controller.current_group.set_selected(True)
             else:
+                print("Clicked")
                 item = self.itemAt(clickPoint)
-                if item is not None and item.get_group_id() == self.controller.get_group_id():
-                    self.removeItem(item)
-                    if item is type(Point):
+                if item is not None and item.group_id == self.controller.get_group_id():
+                    if isinstance(item, Point):
+                        self.removeItem(item)
                         self.controller.delete_point(item)
 
         super(DrawPanel, self).mousePressEvent(event)

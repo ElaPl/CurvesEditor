@@ -180,6 +180,9 @@ class PointGroup(QtCore.QObject):
         self.curve = new_bezier_curve
 
     def update_bezier_curve_horner(self):
+        # self.curve.controlPoints = self.points
+        # self.curve.com
+
         self.scene.removeItem(self.curve)
         new_bezier_curve = BezierCurveHorner(self.points)
         if self.is_merge:
@@ -190,6 +193,7 @@ class PointGroup(QtCore.QObject):
         self.curve = new_bezier_curve
 
     def delete_point(self, point):
+        print("Delet point")
         idx = 0
         for p in self.points:
             if p == point:
@@ -205,6 +209,7 @@ class PointGroup(QtCore.QObject):
 
         if self.curve_id != CurveMode.NO_MODE:
             if self.curve_id == CurveMode.BEZIER_CURVE:
+                print("updateBezierCurve")
                 self.update_bezier_curve()
 
             if self.curve_id == CurveMode.BEZIER_CURVE_HORNER:

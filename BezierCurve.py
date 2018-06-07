@@ -19,6 +19,10 @@ class BezierCurve(QtGui.QGraphicsItem):
         self.pen.setWidth(2)
         self.pen.setColor(QtCore.Qt.blue)
 
+        self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, False)
+        self.setFlag(QtGui.QGraphicsItem.ItemIsPanel, False)
+
+
     def increase_by_one(self):
         new_control_points = [self.controlPoints[0]]
         curr_degree = len(self.controlPoints)

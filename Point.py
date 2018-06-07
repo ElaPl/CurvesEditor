@@ -90,6 +90,10 @@ class Point(QtGui.QGraphicsItem):
             if event.buttons() == QtCore.Qt.LeftButton:
                 self.scene().unselect_all_items()
             self.setSelected(True)
+        elif self.scene().controller.get_pointer_mode() == PointerMode.EDIT_MODE and \
+                        event.buttons() == QtCore.Qt.RightButton:
+            if self.group_id == self.controller.get_group_id():
+                self.controller.delete_point(self)
 
         QtGui.QGraphicsItem.mousePressEvent(self, event)
         self.scene().controller.update_scene()
