@@ -37,7 +37,7 @@ class MainWindow(QtGui.QMainWindow):
         self.graphic_view.update()
 
     def init_graphic_view(self):
-        graphic_view = GraphicView(self, self.width/2, self.height/2, self.controller,
+        graphic_view = GraphicView(self, 2*self.width, 2*self.height, self.controller,
                                    self.status_bar)
         self.setCentralWidget(graphic_view)
         return graphic_view

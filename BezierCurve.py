@@ -34,7 +34,7 @@ class BezierCurve(QtGui.QGraphicsItem):
         new_control_points.append(self.controlPoints[-1])
 
         self.controlPoints = new_control_points
-        self.computeBezierCurve(self.controlPoints)
+        return self.controlPoints
 
     def computeBezierCurve(self, controlPoints):
         controlPointsNum = len(controlPoints)

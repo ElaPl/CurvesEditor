@@ -25,8 +25,7 @@ class PointGroup(QtCore.QObject):
         self.curve = None
 
     def increase_degree_by_one(self):
-        self.curve.increase_by_one()
-        new_points = self.curve.controlPoints
+        new_points = self.curve.increase_by_one()
 
         if self.is_merge:
             self.un_merge()
@@ -40,7 +39,7 @@ class PointGroup(QtCore.QObject):
             self.scene.addItem(p)
 
         self.update_group()
-        
+
     def degree(self):
         return len(self.points)
 
