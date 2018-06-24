@@ -27,18 +27,38 @@ class PointGroup(QtCore.QObject):
     def increase_degree_by_one(self):
         new_points = self.curve.increase_by_one()
 
-        for p in self.points[1:-1]:
+        for p in self.points:
+            self.scene.removeItem(p)
+            if self.is_merge:
+                self.merged_group.removeFromGroup(p)
+
+        self.points = new_points
+
+        for p in self.points:
+            self.scene.addItem(p)
+            if self.is_merge:
+                self.merged_group.addToGroup(p)
+
+        self.update_convex_hull()
+
+    def decrease_degree_by_one(self):
+        new_points = self.curve.decrease_by_one()
+
+        for p in self.points:
             self.scene.removeItem(p)
 
         self.points = new_points
 
-        for p in self.points[1:-1]:
+        for p in self.points:
             self.scene.addItem(p)
 
         self.update_convex_hull()
 
     def degree(self):
-        return len(self.points)
+        if self.curve_id == CurveMode.NO_MODE :
+            return len(self.points)
+        else:
+            return self.curve.get_degree()
 
     def change_curve(self, curve_id):
         if curve_id == CurveMode.NO_MODE and (self.curve is not None):

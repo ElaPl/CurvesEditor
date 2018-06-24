@@ -33,6 +33,11 @@ class Controller(QtCore.QObject):
         self.change_degree_signal.emit()
         self.update_scene_signal.emit()
 
+    def decrease_degree_by_one(self):
+        self.current_group.decrease_degree_by_one()
+        self.change_degree_signal.emit()
+        self.update_scene_signal.emit()
+
     def group_degree(self):
         return self.current_group.degree()
 

@@ -49,6 +49,7 @@ class SideToolbar(QtGui.QToolBar):
 
     def decrease_degree(self):
         if self.controller.bezier_curve_active():
+            self.controller.decrease_degree_by_one()
             print("Decrease degree")
 
     def init_curve_combo_box(self):
