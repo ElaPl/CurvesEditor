@@ -14,6 +14,7 @@ class ItemGroup(QtGui.QGraphicsItemGroup):
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QtGui.QGraphicsItem.ItemIsFocusable, True)
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
+        self.setFlag(QtGui.QGraphicsItem.ItemSendsGeometryChanges, True)
         self.setAcceptsHoverEvents(True)
         self.setSelected(False)
 
@@ -36,7 +37,6 @@ class ItemGroup(QtGui.QGraphicsItemGroup):
         if self.scene().controller.get_pointer_mode() == PointerMode.EDIT_MODE:
             QtGui.QGraphicsItemGroup.mousePressEvent(self, event)
             self.parent.update_group()
-            # self.moved_item_group.emit()
 
     def get_id(self):
         return self.id

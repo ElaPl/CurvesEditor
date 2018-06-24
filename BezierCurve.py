@@ -1,5 +1,4 @@
 from PyQt4 import QtGui, QtCore
-# from Curve import Curve
 from Point import Point
 
 class simple_Point:
@@ -20,8 +19,8 @@ class BezierCurve(QtGui.QGraphicsItem):
         self.pen.setColor(QtCore.Qt.blue)
 
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, False)
-        self.setFlag(QtGui.QGraphicsItem.ItemIsPanel, False)
-
+        # self.setFlag(QtGui.QGraphicsItem.ItemIsPanel, False)
+        self.setFlag(QtGui.QGraphicsItem.ItemIsFocusable, False)
 
     def increase_by_one(self):
         new_control_points = [self.controlPoints[0]]
@@ -39,6 +38,11 @@ class BezierCurve(QtGui.QGraphicsItem):
 
         self.controlPoints = new_control_points
         return self.controlPoints
+
+    def add_point(self, point):
+        self.controlPoints.append(point)
+        self.bezierPoints = self.computeBezierCurve(self.controlPoints)
+        self.update()
 
     def computeBezierCurve(self, controlPoints):
         controlPointsNum = len(controlPoints)

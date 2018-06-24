@@ -12,6 +12,7 @@ class Controller(QtCore.QObject):
     update_scene_signal = QtCore.pyqtSignal()
     change_group_signal = QtCore.pyqtSignal()
     change_degree_signal = QtCore.pyqtSignal()
+    clear_scene_signal = QtCore.pyqtSignal()
 
     def __init__(self, parent=None):
         super(Controller, self).__init__(parent)
@@ -36,10 +37,8 @@ class Controller(QtCore.QObject):
         return self.current_group.degree()
 
     def update_scene(self):
-        # self.current_group.update()
         self.current_group.update_group()
         self.update_scene_signal.emit()
-
 
     def delete_group(self, scene=None):
         self.item_groups.remove(self.current_group)
@@ -47,6 +46,7 @@ class Controller(QtCore.QObject):
             self.new_item_group(scene)
         else:
             self.current_group = self.item_groups[0]
+        self.update_scene_signal.emit()
 
     def get_group_num(self):
         return len(self.item_groups)

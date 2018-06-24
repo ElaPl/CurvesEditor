@@ -71,15 +71,16 @@ class PointGroup(QtCore.QObject):
     def draw_convex_hull(self):
         self.convex_hull = ConvexHull(self.scene, self.points)
         if self.is_merge:
-
             self.merged_group.addToGroup(self.convex_hull)
 
     def remove_convex_hull(self):
+        print("Remove convex hull")
         if self.convex_hull is not None:
             if self.is_merge:
                 self.merged_group.removeFromGroup(self.convex_hull)
             self.scene.removeItem(self.convex_hull)
             self.convex_hull = None
+            self.update_group()
 
     def set_selected(self, value):
         if not self.is_merge:
@@ -144,30 +145,22 @@ class PointGroup(QtCore.QObject):
         return self.is_visible
 
     def update_convex_hull(self):
-        self.remove_convex_hull()
-        self.draw_convex_hull()
+        if self.convex_hull is not None:
+            self.remove_convex_hull()
+            self.draw_convex_hull()
 
     def add_point(self, point):
         self.points.append(point)
         self.scene.addItem(point)
+
+        self.update_convex_hull()
+
         if self.is_merge:
             self.merged_group.addToGroup(point)
-
-        if self.convex_hull is not None:
-            self.update_convex_hull()
-
-        if self.curve_id != CurveMode.NO_MODE:
-            if self.curve_id == CurveMode.BEZIER_CURVE:
-                new_curve = BezierCurve(self.points)
-
-            if self.curve_id == CurveMode.BEZIER_CURVE_HORNER:
-                new_curve = BezierCurveHorner(self.points)
-
-            self.scene.removeItem(self.curve)
-            if self.is_merge:
+            if self.curve_id != CurveMode.NO_MODE:
+                self.curve.add_point(point)
                 self.merged_group.removeFromGroup(self.curve)
-                self.merged_group.addToGroup(new_curve)
-            self.curve = new_curve
+                self.merged_group.addToGroup(self.curve)
 
     def update_bezier_curve(self):
         self.scene.removeItem(self.curve)

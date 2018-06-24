@@ -15,8 +15,12 @@ class DrawPanel(QtGui.QGraphicsScene):
         self.controller.create_new_item_group_signal.connect(self.create_new_group)
         self.controller.delete_group_signal.connect(self.delete_group)
         self.controller.update_scene_signal.connect(self.update)
+        self.controller.clear_scene_signal.connect(self.clear_scene)
         self.controller.new_item_group(self)
         self.controller.new_item_group(self)
+
+    def clear_scene(self):
+        self.clear()
 
     def update(self):
         self.unselect_all_items()
@@ -45,21 +49,21 @@ class DrawPanel(QtGui.QGraphicsScene):
         painter.drawLines([line1, line2, line3, line4])
 
     def mousePressEvent(self, event):
-
         if PointerMode.INSERT_MODE == self.controller.get_pointer_mode() and \
                 self.controller.is_group_visible():
-            clickPoint = event.scenePos()
+            print("Scene clicked")
+            click_point = event.scenePos()
             if event.buttons() == QtCore.Qt.LeftButton:
-                clickPoint = event.scenePos()
-                if 0 < clickPoint.x() < self.width() and 0 < clickPoint.y() < self.height():
-                    p = Point(clickPoint.x(), clickPoint.y(),
+                click_point = event.scenePos()
+                if 0 < click_point.x() < self.width() and 0 < click_point.y() < self.height():
+                    p = Point(click_point.x(), click_point.y(),
                               self.controller.get_group_id())
                     self.controller.add_item_to_group(p)
                     if self.controller.current_group.is_merge:
                         self.controller.current_group.set_selected(True)
             else:
                 print("Clicked")
-                item = self.itemAt(clickPoint)
+                item = self.itemAt(click_point)
                 if item is not None and item.group_id == self.controller.get_group_id():
                     if isinstance(item, Point):
                         self.removeItem(item)
