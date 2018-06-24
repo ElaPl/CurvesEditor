@@ -90,3 +90,8 @@ class BezierCurve(QtGui.QGraphicsItem):
         for i in range(0, bezierPointsNum - 1):
             painter.drawLine(self.bezierPoints[i].x, self.bezierPoints[i].y,
                              self.bezierPoints[i + 1].x, self.bezierPoints[i + 1].y)
+
+    def update_curve(self, control_points):
+        self.controlPoints = control_points
+        self.bezierPoints = self.computeBezierCurve(self.controlPoints)
+        self.update()

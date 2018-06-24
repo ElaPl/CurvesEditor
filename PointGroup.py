@@ -27,9 +27,6 @@ class PointGroup(QtCore.QObject):
     def increase_degree_by_one(self):
         new_points = self.curve.increase_by_one()
 
-        if self.is_merge:
-            self.un_merge()
-
         for p in self.points[1:-1]:
             self.scene.removeItem(p)
 
@@ -38,7 +35,7 @@ class PointGroup(QtCore.QObject):
         for p in self.points[1:-1]:
             self.scene.addItem(p)
 
-        self.update_group()
+        self.update_convex_hull()
 
     def degree(self):
         return len(self.points)
@@ -74,13 +71,11 @@ class PointGroup(QtCore.QObject):
             self.merged_group.addToGroup(self.convex_hull)
 
     def remove_convex_hull(self):
-        print("Remove convex hull")
         if self.convex_hull is not None:
             if self.is_merge:
                 self.merged_group.removeFromGroup(self.convex_hull)
             self.scene.removeItem(self.convex_hull)
             self.convex_hull = None
-            self.update_group()
 
     def set_selected(self, value):
         if not self.is_merge:
@@ -119,10 +114,6 @@ class PointGroup(QtCore.QObject):
         self.is_merge = True
         self.merged_group.setSelected(True)
 
-    def update_item_group(self):
-        self.un_merge()
-        self.merge()
-
     def un_merge(self):
         self.scene.destroyItemGroup(self.merged_group)
         self.is_merge = False
@@ -149,6 +140,10 @@ class PointGroup(QtCore.QObject):
             self.remove_convex_hull()
             self.draw_convex_hull()
 
+    def update_bezier_curve(self):
+        if self.curve_id != CurveMode.NO_MODE:
+            self.curve.update_curve(self.points)
+
     def add_point(self, point):
         self.points.append(point)
         self.scene.addItem(point)
@@ -157,66 +152,25 @@ class PointGroup(QtCore.QObject):
 
         if self.is_merge:
             self.merged_group.addToGroup(point)
-            if self.curve_id != CurveMode.NO_MODE:
-                self.curve.add_point(point)
-                self.merged_group.removeFromGroup(self.curve)
-                self.merged_group.addToGroup(self.curve)
 
-    def update_bezier_curve(self):
-        self.scene.removeItem(self.curve)
-        new_bezier_curve = BezierCurve(self.points)
-        if self.is_merge:
-            self.merged_group.removeFromGroup(self.curve)
-            self.merged_group.addToGroup(new_bezier_curve)
-        else:
-            self.scene.addItem(new_bezier_curve)
-        self.curve = new_bezier_curve
-
-    def update_bezier_curve_horner(self):
-        # self.curve.controlPoints = self.points
-        # self.curve.com
-
-        self.scene.removeItem(self.curve)
-        new_bezier_curve = BezierCurveHorner(self.points)
-        if self.is_merge:
-            self.merged_group.removeFromGroup(self.curve)
-            self.merged_group.addToGroup(new_bezier_curve)
-        else:
-            self.scene.addItem(new_bezier_curve)
-        self.curve = new_bezier_curve
+        if self.curve_id != CurveMode.NO_MODE:
+            self.curve.add_point(point)
 
     def delete_point(self, point):
-        print("Delet point")
         idx = 0
         for p in self.points:
             if p == point:
                 del self.points[idx]
             idx += 1
+
         if self.is_merge:
             self.merged_group.removeFromGroup(point)
         else:
             self.scene.removeItem(point)
 
-        if self.convex_hull is not None:
-            self.update_convex_hull()
-
-        if self.curve_id != CurveMode.NO_MODE:
-            if self.curve_id == CurveMode.BEZIER_CURVE:
-                print("updateBezierCurve")
-                self.update_bezier_curve()
-
-            if self.curve_id == CurveMode.BEZIER_CURVE_HORNER:
-                self.update_bezier_curve_horner()
+        self.update_convex_hull()
+        self.curve.update_curve(self.points)
 
     def update_group(self):
-        if self.is_merge:
-            self.un_merge()
-            self.update_convex_hull()
-            self.merge()
-        else:
-            if self.convex_hull is not None:
-                self.update_convex_hull()
-            if self.curve_id == CurveMode.BEZIER_CURVE:
-                self.update_bezier_curve()
-            elif self.curve_id == CurveMode.BEZIER_CURVE_HORNER:
-                self.update_bezier_curve_horner()
+        self.update_convex_hull()
+        self.update_bezier_curve()

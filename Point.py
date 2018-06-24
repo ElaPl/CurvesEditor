@@ -80,9 +80,6 @@ class Point(QtGui.QGraphicsItem):
 
         self.scene().controller.update_scene()
 
-            # self.scene().displayCoordinates(self.x(), self.y())
-            # self.scene().updateScene()
-
     def mousePressEvent(self, event):
         print("Point mousePressEvent")
         if self.scene().controller.get_pointer_mode() == PointerMode.EDIT_MODE:
