@@ -46,6 +46,7 @@ class Controller(QtCore.QObject):
         self.update_scene_signal.emit()
 
     def delete_group(self, scene=None):
+        self.current_group.clear_group()
         self.item_groups.remove(self.current_group)
         if len(self.item_groups) == 0:
             self.new_item_group(scene)

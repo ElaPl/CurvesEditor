@@ -24,6 +24,17 @@ class PointGroup(QtCore.QObject):
         self.curve_id = CurveMode.NO_MODE
         self.curve = None
 
+    def clear_group(self):
+        self.remove_convex_hull()
+        self.remove_curve()
+        for p in self.points:
+            self.scene.removeItem(p)
+
+    def remove_curve(self):
+        if self.curve_id != CurveMode.NO_MODE:
+            self.scene.removeItem(self.curve)
+            self.curve_id = CurveMode.NO_MODE
+
     def increase_degree_by_one(self):
         new_points = self.curve.increase_by_one()
 
@@ -63,38 +74,39 @@ class PointGroup(QtCore.QObject):
     def change_curve(self, curve_id):
         if curve_id == CurveMode.NO_MODE and (self.curve is not None):
             self.curve_id = curve_id
-            self.scene.removeItem(self.curve)
             if self.is_merge:
                 self.merged_group.removeFromGroup(self.curve)
-
+            self.scene.removeItem(self.curve)
+            self.curve = None
         else:
-            if curve_id == CurveMode.BEZIER_CURVE:
-                self.curve_id = curve_id
-                new_curve = BezierCurve(self.points)
-            if curve_id == CurveMode.BEZIER_CURVE_HORNER:
-                self.curve_id = curve_id
-                new_curve = BezierCurveHorner(self.points)
+            was_marge = False
             if self.is_merge:
-                if self.curve is not None:
-                    self.merged_group.removeFromGroup(self.curve)
-                self.merged_group.addToGroup(new_curve)
-            else:
-                if self.curve is not None:
-                    self.scene.removeItem(self.curve)
-                self.scene.addItem(new_curve)
+                was_marge = True
+                self.un_merge()
 
-            self.curve = new_curve
+            self.curve_id = curve_id
+            if self.curve is None:
+                self.curve = BezierCurve(self.points)
+            else:
+                self.curve.update_curve(self.points)
+
+            if was_marge:
+                self.merge()
+            self.scene.addItem(self.curve)
 
     def draw_convex_hull(self):
-        self.convex_hull = ConvexHull(self.scene, self.points)
+        self.convex_hull = ConvexHull(self.points)
         if self.is_merge:
             self.merged_group.addToGroup(self.convex_hull)
+        else:
+            self.scene.addItem(self.convex_hull)
 
     def remove_convex_hull(self):
         if self.convex_hull is not None:
             if self.is_merge:
                 self.merged_group.removeFromGroup(self.convex_hull)
-            self.scene.removeItem(self.convex_hull)
+            else:
+                self.scene.removeItem(self.convex_hull)
             self.convex_hull = None
 
     def set_selected(self, value):
@@ -138,6 +150,9 @@ class PointGroup(QtCore.QObject):
         self.scene.destroyItemGroup(self.merged_group)
         self.is_merge = False
         self.merged_group = None
+        if self.curve_id != CurveMode.NO_MODE:
+            self.change_curve(CurveMode.NO_MODE)
+            self.change_curve(CurveMode.BEZIER_CURVE)
 
     def set_visible(self, visible):
         self.is_visible = visible
@@ -162,7 +177,11 @@ class PointGroup(QtCore.QObject):
 
     def update_bezier_curve(self):
         if self.curve_id != CurveMode.NO_MODE:
-            self.curve.update_curve(self.points)
+            if self.curve is not None:
+                self.curve.update_curve(self.points)
+            else:
+                self.curve = BezierCurve(self.points)
+                self.scene.addItem(self.curve)
 
     def add_point(self, point):
         self.points.append(point)
@@ -192,5 +211,13 @@ class PointGroup(QtCore.QObject):
         self.curve.update_curve(self.points)
 
     def update_group(self):
-        self.update_convex_hull()
-        self.update_bezier_curve()
+        print("Update group")
+        if self.is_merge:
+            self.un_merge()
+            self.update_convex_hull()
+            if self.curve_id != CurveMode.NO_MODE:
+                self.curve.update_curve(self.points)
+            self.merge()
+        else:
+            self.update_convex_hull()
+            self.update_bezier_curve()

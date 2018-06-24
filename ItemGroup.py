@@ -35,7 +35,7 @@ class ItemGroup(QtGui.QGraphicsItemGroup):
 
     def mouseReleaseEvent(self, event):
         if self.scene().controller.get_pointer_mode() == PointerMode.EDIT_MODE:
-            QtGui.QGraphicsItemGroup.mousePressEvent(self, event)
+            QtGui.QGraphicsItemGroup.mouseReleaseEvent(self, event)
             self.parent.update_group()
 
     def get_id(self):

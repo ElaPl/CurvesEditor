@@ -3,7 +3,7 @@ from functools import reduce
 
 
 class ConvexHull(QtGui.QGraphicsItem):
-    def __init__(self, scene, points):
+    def __init__(self, points, scene=None):
         super(ConvexHull, self).__init__(parent=None, scene=scene)
         self.pen = QtGui.QPen(QtCore.Qt.DotLine)
         self.pen.setWidth(1)
