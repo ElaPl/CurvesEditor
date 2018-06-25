@@ -9,7 +9,7 @@ class simple_Point:
 
 
 class BezierCurve(QtGui.QGraphicsItem):
-    precision = 100
+    precision = 200
 
     def __init__(self, control_points):
         super(BezierCurve, self).__init__()
@@ -53,7 +53,7 @@ class BezierCurve(QtGui.QGraphicsItem):
 
     def decrease_by_one(self):
         curr_degree = len(self.controlPoints)
-        if curr_degree < 4:
+        if curr_degree < 5:
             return self.controlPoints
 
         group_id = self.controlPoints[0].group_id

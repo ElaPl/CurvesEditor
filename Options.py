@@ -13,8 +13,8 @@ class CurveMode:
 
 
 curve_options = [("No curve", CurveMode.NO_MODE),
-                 ("Bezier curve", CurveMode.BEZIER_CURVE),
-                 ("Bezier curve horner", CurveMode.BEZIER_CURVE_HORNER)]
+                 ("Bezier curve", CurveMode.BEZIER_CURVE)]
+                 # ("Bezier curve horner", CurveMode.BEZIER_CURVE_HORNER)]
 
 def get_curve_names():
     l = []
